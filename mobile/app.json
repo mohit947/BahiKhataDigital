@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "BahiKhataDigital",
+    "slug": "bahikhatadigital",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "bahikhatadigital",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bahikhatadigital.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#7C3AED",
+        "foregroundImage": "./assets/icon.png"
+      },
+      "package": "com.bahikhatadigital.app"
+    },
+    "plugins": ["expo-router"],
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
