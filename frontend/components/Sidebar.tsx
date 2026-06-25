@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Package, ReceiptText, LayoutDashboard, LogOut, Menu, X,
-  Plus, Users, ChevronRight, BarChart2, Truck, UserCog, Receipt
+  Plus, Users, ChevronRight, BarChart2, Truck, UserCog, Receipt, Settings
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -68,6 +68,12 @@ function SidebarContent({ onNav }: { onNav?: () => void }) {
         { href: "/reports", label: t("nav_reports"), icon: BarChart2 },
       ],
     },
+    {
+      label: "Account",
+      items: [
+        { href: "/settings", label: "Settings", icon: Settings },
+      ],
+    },
   ];
 
   const isActive = (href: string) =>
@@ -88,7 +94,9 @@ function SidebarContent({ onNav }: { onNav?: () => void }) {
             <Package size={18} className="text-white" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-tight">BahiKhataDigital</p>
+            <p className="text-white font-bold text-sm leading-tight" suppressHydrationWarning>
+              {user?.organization?.name || "BahiKhataDigital"}
+            </p>
             <p className="text-slate-400 text-xs">Billing System</p>
           </div>
         </div>

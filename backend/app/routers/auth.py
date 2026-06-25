@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
 from app import models, schemas
 from app.auth import verify_password, hash_password, create_access_token
@@ -45,6 +45,7 @@ def register(request: Request, firm_in: schemas.FirmRegisterCreate, db: Session 
 def login(request: Request, credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     user = (
         db.query(models.User)
+        .options(joinedload(models.User.organization))
         .join(models.Organization)
         .filter(
             models.User.email == credentials.email,
@@ -82,6 +83,7 @@ def invite_user(
     db.add(user)
     db.commit()
     db.refresh(user)
+    user.organization = current_user.organization
 
     token = create_access_token({"sub": str(user.id), "org": str(user.org_id)})
     return {"access_token": token, "user": user}

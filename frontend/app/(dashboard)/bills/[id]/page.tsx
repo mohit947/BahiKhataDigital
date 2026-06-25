@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { billsApi } from "@/lib/api";
-import { Bill } from "@/lib/types";
+import { Bill, Organization } from "@/lib/types";
 import BillPrint from "@/components/BillPrint";
 import PaymentModal from "@/components/PaymentModal";
-import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -13,9 +12,12 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeft, Printer, Download, Share2, IndianRupee,
   Copy, XCircle, MessageCircle, History, CheckCircle, AlertCircle, Wallet,
+  LayoutTemplate, AlignJustify,
 } from "lucide-react";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { useT } from "@/lib/i18n";
+import { getUser } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 
 const statusClass: Record<string, string> = {
   paid: "badge-paid", pending: "badge-pending",
@@ -26,6 +28,16 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const qc = useQueryClient();
   const { t, lang } = useT();
+  const [orientation, setOrientation] = useState<"portrait" | "landscape">("portrait");
+  const [org, setOrg] = useState<Organization | null>(null);
+  const [customQrImage, setCustomQrImage] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const user = getUser();
+    setOrg(user?.organization ?? null);
+    const saved = localStorage.getItem("bahikhatadigital_custom_qr");
+    if (saved) setCustomQrImage(saved);
+  }, []);
 
   const methodLabel = (m: string) => {
     const map: Record<string, Record<string, string>> = {
@@ -35,6 +47,7 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
     };
     return map[m]?.[lang] ?? map[m]?.en ?? m;
   };
+
   const printRef = useRef<HTMLDivElement>(null);
   const [showPayment, setShowPayment] = useState(false);
 
@@ -83,6 +96,9 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
     documentTitle: bill ? `Invoice-${bill.bill_number}` : "Invoice",
+    pageStyle: orientation === "landscape"
+      ? `@page { size: A4 landscape; margin: 8mm; }`
+      : `@page { size: A4 portrait; margin: 8mm; }`,
   });
 
   const handleShare = async () => {
@@ -99,9 +115,10 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
 
   const handleWhatsApp = () => {
     if (!bill) return;
+    const firmName = org?.name || "us";
     const balance = Number(bill.grand_total) - Number(bill.amount_paid);
     const text = [
-      `*Invoice from BahiKhataDigital*`,
+      `*Invoice from ${firmName}*`,
       `Bill No: ${bill.bill_number}`,
       `Amount: ${formatCurrency(bill.grand_total)}`,
       balance > 0 ? `Balance Due: ${formatCurrency(balance)}` : `Status: ✅ Fully Paid`,
@@ -139,7 +156,35 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
         <Link href="/bills" className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-sm font-medium transition">
           <ArrowLeft size={16} /> {t("allBills")}
         </Link>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 items-center">
+          {/* Orientation toggle */}
+          <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+            <button
+              onClick={() => setOrientation("portrait")}
+              title="Portrait"
+              className={cn(
+                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition",
+                orientation === "portrait"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              )}
+            >
+              <AlignJustify size={13} /> Portrait
+            </button>
+            <button
+              onClick={() => setOrientation("landscape")}
+              title="Landscape"
+              className={cn(
+                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition",
+                orientation === "landscape"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
+              )}
+            >
+              <LayoutTemplate size={13} /> Landscape
+            </button>
+          </div>
+
           <button onClick={handleWhatsApp} className="btn-secondary flex items-center gap-2 text-green-700 border-green-200 hover:bg-green-50">
             <MessageCircle size={15} /> {t("whatsapp")}
           </button>
@@ -308,14 +353,28 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
         <p className="text-xs text-slate-400 text-center mb-3">{t("invoicePreview")}</p>
         <div className="bg-slate-200 rounded-xl p-4 overflow-x-auto">
           <div className="shadow-xl mx-auto w-fit">
-            <BillPrint ref={printRef} bill={bill} upiLink={qrData?.upi_link} />
+            <BillPrint
+              ref={printRef}
+              bill={bill}
+              org={org}
+              upiLink={qrData?.upi_link}
+              customQrImage={customQrImage}
+              orientation={orientation}
+            />
           </div>
         </div>
       </div>
 
       {/* Hidden actual print target */}
       <div className="print-only">
-        <BillPrint ref={printRef} bill={bill} upiLink={qrData?.upi_link} />
+        <BillPrint
+          ref={printRef}
+          bill={bill}
+          org={org}
+          upiLink={qrData?.upi_link}
+          customQrImage={customQrImage}
+          orientation={orientation}
+        />
       </div>
 
       {/* Payment modal */}

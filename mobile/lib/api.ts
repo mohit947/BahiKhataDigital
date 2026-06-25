@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // localhost works on simulators; use your Mac's LAN IP for physical devices
 // Production: set to your deployed backend URL
-const DEV_HOST = "10.248.197.184"; // auto-detected local IP
+const DEV_HOST = "10.130.151.184"; // auto-detected local IP
 const API_URL = __DEV__
   ? `http://${DEV_HOST}:8000/api/v1`
   : "http://localhost:8000/api/v1";

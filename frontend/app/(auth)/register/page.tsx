@@ -56,7 +56,8 @@ export default function RegisterPage() {
       });
       qc.clear();
       saveAuth(res.access_token, res.user);
-      toast.success(`Welcome to BahiKhataDigital, ${res.user.name}!`);
+      const firm = res.user.organization?.name || res.user.name;
+      toast.success(`Welcome to ${firm}!`);
       router.push("/dashboard");
     } catch (err: unknown) {
       const msg =

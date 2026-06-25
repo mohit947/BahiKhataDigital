@@ -628,11 +628,13 @@ def get_qr_data(
     )
     if not bill:
         raise HTTPException(status_code=404, detail="Bill not found")
+    org = db.query(models.Organization).filter(models.Organization.id == current_user.org_id).first()
     balance = float(bill.grand_total) - float(bill.amount_paid)
     amount = balance if balance > 0 else float(bill.grand_total)
-    upi_id = settings.UPI_ID
-    name = settings.UPI_NAME.replace(" ", "%20")
-    upi_link = f"upi://pay?pa={upi_id}&pn={name}&am={amount:.2f}&cu=INR&tn=Bill%20{bill.bill_number}"
+    upi_id = (org.upi_id if org and org.upi_id else None) or settings.UPI_ID
+    upi_name = (org.upi_name if org and org.upi_name else None) or settings.UPI_NAME
+    name = upi_name.replace(" ", "%20")
+    upi_link = f"upi://pay?pa={upi_id}&pn={name}&am={amount:.2f}&cu=INR&tn=Bill%20{bill.bill_number}" if upi_id else ""
     return {
         "upi_link": upi_link,
         "bill_number": bill.bill_number,

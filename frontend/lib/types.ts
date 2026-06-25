@@ -5,6 +5,8 @@ export interface Organization {
   address?: string;
   phone?: string;
   email?: string;
+  upi_id?: string;
+  upi_name?: string;
   created_at: string;
 }
 

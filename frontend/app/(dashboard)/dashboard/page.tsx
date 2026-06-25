@@ -6,6 +6,8 @@ import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { useT } from "@/lib/i18n";
 import { TrendingUp, Clock, IndianRupee, ReceiptText, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { getUser } from "@/lib/auth";
 
 function StatCard({ title, value, sub, icon: Icon, color }: {
   title: string; value: string; sub: string;
@@ -31,6 +33,12 @@ const statusClass: Record<string, string> = {
 
 export default function DashboardPage() {
   const { t } = useT();
+  const [orgName, setOrgName] = useState<string>("");
+
+  useEffect(() => {
+    const user = getUser();
+    setOrgName(user?.organization?.name || "");
+  }, []);
 
   const { data: stats } = useQuery<DashboardStats>({
     queryKey: ["stats"],
@@ -48,7 +56,9 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">{t("dashboard")}</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{t("welcomeBack")}</p>
+          <p className="text-slate-500 text-sm mt-0.5" suppressHydrationWarning>
+            {t("welcomeBack")}{orgName ? ` to ${orgName}` : ""}
+          </p>
         </div>
         <Link href="/bills/new" className="btn-primary flex items-center gap-2">
           <ReceiptText size={16} /> {t("newBill")}

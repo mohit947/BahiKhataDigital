@@ -18,6 +18,8 @@ class Organization(Base):
     address = Column(Text, nullable=True)
     phone = Column(String(20), nullable=True)
     email = Column(String(255), nullable=True)
+    upi_id = Column(String(100), nullable=True)
+    upi_name = Column(String(255), nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 

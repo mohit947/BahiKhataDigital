@@ -33,7 +33,8 @@ export default function LoginPage() {
       const res = await authApi.login(data.email, data.password);
       qc.clear();
       saveAuth(res.access_token, res.user);
-      toast.success(`Welcome back, ${res.user.name}!`);
+      const firm = res.user.organization?.name;
+      toast.success(firm ? `Welcome back to ${firm}!` : `Welcome back, ${res.user.name}!`);
       router.push("/dashboard");
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || "Login failed";

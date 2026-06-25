@@ -16,7 +16,7 @@ const T = {
     exportCSV: "Export CSV", apply: "Apply", today: "Today", thisMonth: "This Month",
     viewAll: "View all", loading: "Loading...", update: "Update", saving: "Saving…",
     // Dashboard
-    dashboard: "Dashboard", welcomeBack: "Welcome back to BahiKhataDigital",
+    dashboard: "Dashboard", welcomeBack: "Welcome back",
     totalRevenue: "Total Revenue", totalBills: "Total Bills",
     todayRevenue: "Today's Revenue", todayBills: "bills today",
     pendingAmount: "Pending", unpaidPartial: "Unpaid / partial",
@@ -90,7 +90,7 @@ const T = {
     exportCSV: "CSV निर्यात", apply: "लागू करें", today: "आज", thisMonth: "इस महीने",
     viewAll: "सभी देखें", loading: "लोड हो रहा है...", update: "अपडेट करें", saving: "सहेजा जा रहा है…",
     // Dashboard
-    dashboard: "डैशबोर्ड", welcomeBack: "वान्या ट्रेडर्स में वापस स्वागत है",
+    dashboard: "डैशबोर्ड", welcomeBack: "वापस स्वागत है",
     totalRevenue: "कुल आय", totalBills: "कुल बिल",
     todayRevenue: "आज की आय", todayBills: "आज के बिल",
     pendingAmount: "बकाया", unpaidPartial: "अदत्त / आंशिक",
