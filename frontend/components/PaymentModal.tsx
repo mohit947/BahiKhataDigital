@@ -71,33 +71,37 @@ export default function PaymentModal({ bill, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+    /* Mobile: full-screen white page. Desktop: dimmed backdrop + centered modal */
+    <div className="fixed inset-0 z-50 flex flex-col bg-white sm:bg-black/40 sm:backdrop-blur-sm sm:items-center sm:justify-center sm:p-4">
+      <div className="flex flex-col w-full flex-1 sm:flex-none sm:rounded-2xl sm:max-w-md sm:max-h-[88vh] sm:shadow-2xl overflow-hidden bg-white">
+
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-100 flex-shrink-0">
           <div>
-            <h2 className="font-bold text-slate-900">{t("recordPayment")}</h2>
+            <h2 className="font-bold text-slate-900 text-base">{t("recordPayment")}</h2>
             <p className="text-xs text-slate-400 mt-0.5">{bill.bill_number}</p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition">
-            <X size={20} />
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition p-1 -mr-1">
+            <X size={22} />
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
-          {/* Balance Summary */}
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="bg-slate-50 rounded-xl p-3">
-              <p className="text-xs text-slate-500 font-medium">{t("total")}</p>
-              <p className="text-sm font-bold text-slate-800 mt-0.5">{formatCurrency(bill.grand_total)}</p>
+        {/* Scrollable body */}
+        <div className="px-4 sm:px-6 py-5 space-y-5 overflow-y-auto flex-1">
+
+          {/* Balance summary */}
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="bg-slate-50 rounded-xl p-2.5">
+              <p className="text-xs text-slate-500 font-medium leading-tight">{t("total")}</p>
+              <p className="text-sm font-bold text-slate-800 mt-0.5 truncate">{formatCurrency(bill.grand_total)}</p>
             </div>
-            <div className="bg-emerald-50 rounded-xl p-3">
-              <p className="text-xs text-emerald-600 font-medium">{t("amountPaid")}</p>
-              <p className="text-sm font-bold text-emerald-700 mt-0.5">{formatCurrency(bill.amount_paid)}</p>
+            <div className="bg-emerald-50 rounded-xl p-2.5">
+              <p className="text-xs text-emerald-600 font-medium leading-tight">{t("amountPaid")}</p>
+              <p className="text-sm font-bold text-emerald-700 mt-0.5 truncate">{formatCurrency(bill.amount_paid)}</p>
             </div>
-            <div className={`rounded-xl p-3 ${balance > 0 ? "bg-red-50" : "bg-emerald-50"}`}>
-              <p className={`text-xs font-medium ${balance > 0 ? "text-red-500" : "text-emerald-600"}`}>{t("balanceDue")}</p>
-              <p className={`text-sm font-bold mt-0.5 ${balance > 0 ? "text-red-600" : "text-emerald-700"}`}>
+            <div className={`rounded-xl p-2.5 ${balance > 0 ? "bg-red-50" : "bg-emerald-50"}`}>
+              <p className={`text-xs font-medium leading-tight ${balance > 0 ? "text-red-500" : "text-emerald-600"}`}>{t("balanceDue")}</p>
+              <p className={`text-sm font-bold mt-0.5 truncate ${balance > 0 ? "text-red-600" : "text-emerald-700"}`}>
                 {formatCurrency(balance)}
               </p>
             </div>
@@ -122,13 +126,13 @@ export default function PaymentModal({ bill, onClose }: Props) {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0.00"
-                    className={`input-field pl-8 ${excess > 0 ? "border-amber-400 ring-1 ring-amber-300" : ""}`}
+                    className={`input-field pl-8 text-lg ${excess > 0 ? "border-amber-400 ring-1 ring-amber-300" : ""}`}
                     autoFocus
                   />
                 </div>
-                <div className="flex items-center justify-between mt-1.5">
+                <div className="flex items-center justify-between mt-2">
                   <button type="button" onClick={handlePayFull}
-                    className="text-xs text-violet-600 hover:text-violet-700 font-medium">
+                    className="text-sm text-violet-600 hover:text-violet-700 font-semibold">
                     {t("payFullBalance")} ({formatCurrency(balance)})
                   </button>
                   {excess > 0 && (
@@ -172,7 +176,7 @@ export default function PaymentModal({ bill, onClose }: Props) {
                 </div>
               )}
 
-              {/* Method */}
+              {/* Payment method */}
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
                   {t("paymentMethodLabel")}
@@ -180,7 +184,7 @@ export default function PaymentModal({ bill, onClose }: Props) {
                 <div className="grid grid-cols-3 gap-2">
                   {["cash", "upi", "card", "bank_transfer", "cheque"].map((val) => (
                     <button key={val} type="button" onClick={() => setMethod(val)}
-                      className={`py-2 px-3 rounded-lg text-xs font-semibold border transition ${
+                      className={`py-2.5 px-3 rounded-lg text-xs font-semibold border transition ${
                         method === val
                           ? "bg-violet-600 text-white border-violet-600"
                           : "bg-white text-slate-600 border-slate-200 hover:border-violet-300"
@@ -201,18 +205,21 @@ export default function PaymentModal({ bill, onClose }: Props) {
                   className="input-field" />
               </div>
 
-              <button
-                onClick={() => {
-                  if (!amount || entered <= 0) {
-                    toast.error(t("enterValidAmount")); return;
-                  }
-                  mutation.mutate();
-                }}
-                disabled={mutation.isPending || !amount}
-                className="btn-primary w-full"
-              >
-                {buttonLabel()}
-              </button>
+              {/* Submit — sticky on mobile */}
+              <div className="sticky bottom-0 pb-2 sm:pb-0 bg-white sm:bg-transparent pt-1">
+                <button
+                  onClick={() => {
+                    if (!amount || entered <= 0) {
+                      toast.error(t("enterValidAmount")); return;
+                    }
+                    mutation.mutate();
+                  }}
+                  disabled={mutation.isPending || !amount}
+                  className="btn-primary w-full py-3 text-base"
+                >
+                  {buttonLabel()}
+                </button>
+              </div>
             </>
           )}
 
@@ -222,18 +229,18 @@ export default function PaymentModal({ bill, onClose }: Props) {
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                 <History size={12} /> {t("paymentHistory")}
               </p>
-              <div className="space-y-2 max-h-40 overflow-y-auto">
+              <div className="space-y-2">
                 {bill.payment_logs.map((log: PaymentLog) => (
-                  <div key={log.id} className="flex items-center justify-between py-2 px-3 bg-slate-50 rounded-lg">
-                    <div>
+                  <div key={log.id} className="flex items-center justify-between py-2.5 px-3 bg-slate-50 rounded-lg">
+                    <div className="min-w-0">
                       <p className="text-sm font-semibold text-slate-800">{formatCurrency(log.amount)}</p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 truncate">
                         {methodLabel(log.method)}
                         {log.note ? ` · ${log.note}` : ""}
                         {" · "}{formatDateTime(log.created_at)}
                       </p>
                     </div>
-                    <CheckCircle size={14} className="text-emerald-500 shrink-0" />
+                    <CheckCircle size={14} className="text-emerald-500 shrink-0 ml-2" />
                   </div>
                 ))}
               </div>

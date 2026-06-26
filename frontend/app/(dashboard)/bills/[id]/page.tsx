@@ -154,11 +154,11 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
       {/* Top bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 no-print">
         <Link href="/bills" className="flex items-center gap-2 text-slate-500 hover:text-slate-800 text-sm font-medium transition">
-          <ArrowLeft size={16} /> {t("allBills")}
+          <ArrowLeft size={16} /> <span className="hidden sm:inline">{t("allBills")}</span>
         </Link>
         <div className="flex flex-wrap gap-2 items-center">
-          {/* Orientation toggle */}
-          <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+          {/* Orientation toggle — hidden on mobile */}
+          <div className="hidden sm:flex items-center gap-1 bg-slate-100 rounded-lg p-1">
             <button
               onClick={() => setOrientation("portrait")}
               title="Portrait"
@@ -185,33 +185,33 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
             </button>
           </div>
 
-          <button onClick={handleWhatsApp} className="btn-secondary flex items-center gap-2 text-green-700 border-green-200 hover:bg-green-50">
-            <MessageCircle size={15} /> {t("whatsapp")}
+          <button onClick={handleWhatsApp} className="btn-secondary flex items-center gap-1.5 text-green-700 border-green-200 hover:bg-green-50 !px-3 sm:!px-5">
+            <MessageCircle size={15} /> <span className="hidden sm:inline">{t("whatsapp")}</span>
           </button>
-          <button onClick={handleShare} className="btn-secondary flex items-center gap-2">
-            <Share2 size={15} /> {t("share")}
+          <button onClick={handleShare} className="btn-secondary flex items-center gap-1.5 !px-3 sm:!px-5">
+            <Share2 size={15} /> <span className="hidden sm:inline">{t("share")}</span>
           </button>
-          <button onClick={handlePrint} className="btn-secondary flex items-center gap-2">
+          <button onClick={handlePrint} className="hidden sm:flex btn-secondary items-center gap-2">
             <Download size={15} /> {t("savePDF")}
           </button>
-          <button onClick={handlePrint} className="btn-primary flex items-center gap-2">
-            <Printer size={15} /> {t("print")}
+          <button onClick={handlePrint} className="btn-primary flex items-center gap-1.5 !px-3 sm:!px-5">
+            <Printer size={15} /> <span className="hidden sm:inline">{t("print")}</span>
           </button>
         </div>
       </div>
 
       {/* Bill summary + actions */}
       <div className="card p-5 no-print">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
             <p className="text-xs text-slate-400 font-medium">{t("billNumber")}</p>
-            <p className="text-xl font-bold text-slate-900 mt-0.5">{bill.bill_number}</p>
+            <p className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">{bill.bill_number}</p>
             <p className="text-xs text-slate-400 mt-0.5">{formatDateTime(bill.created_at)}</p>
           </div>
           {bill.customer_name && (
-            <div>
+            <div className="min-w-0">
               <p className="text-xs text-slate-400">{t("customer")}</p>
-              <p className="font-semibold text-slate-800 mt-0.5">{bill.customer_name}</p>
+              <p className="font-semibold text-slate-800 mt-0.5 truncate max-w-[140px] sm:max-w-none">{bill.customer_name}</p>
               {bill.customer_phone && <p className="text-xs text-slate-400">{bill.customer_phone}</p>}
               {bill.customer && (
                 <Link href={`/customers/${bill.customer.id}`} className="text-xs text-violet-600 hover:underline mt-0.5 inline-block">
@@ -220,9 +220,9 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
               )}
             </div>
           )}
-          <div className="text-right">
+          <div className="text-right shrink-0">
             <p className="text-xs text-slate-400">{t("grandTotal")}</p>
-            <p className="text-2xl font-bold text-violet-700 mt-0.5">{formatCurrency(bill.grand_total)}</p>
+            <p className="text-xl sm:text-2xl font-bold text-violet-700 mt-0.5">{formatCurrency(bill.grand_total)}</p>
             <span className={statusClass[bill.payment_status] || "badge-pending"}>
               {bill.payment_status}
             </span>
@@ -230,18 +230,18 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Payment summary bar */}
-        <div className="mt-5 grid grid-cols-3 gap-3">
-          <div className="bg-slate-50 rounded-xl p-4 text-center">
-            <p className="text-xs text-slate-500 font-medium">{t("totalBilled")}</p>
-            <p className="text-lg font-bold text-slate-900 mt-1">{formatCurrency(bill.grand_total)}</p>
+        <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+          <div className="bg-slate-50 rounded-xl p-2.5 sm:p-4 text-center">
+            <p className="text-xs text-slate-500 font-medium leading-tight">{t("totalBilled")}</p>
+            <p className="text-sm sm:text-lg font-bold text-slate-900 mt-0.5 sm:mt-1 truncate">{formatCurrency(bill.grand_total)}</p>
           </div>
-          <div className="bg-emerald-50 rounded-xl p-4 text-center">
-            <p className="text-xs text-emerald-600 font-medium">{t("amountPaid")}</p>
-            <p className="text-lg font-bold text-emerald-700 mt-1">{formatCurrency(bill.amount_paid)}</p>
+          <div className="bg-emerald-50 rounded-xl p-2.5 sm:p-4 text-center">
+            <p className="text-xs text-emerald-600 font-medium leading-tight">{t("amountPaid")}</p>
+            <p className="text-sm sm:text-lg font-bold text-emerald-700 mt-0.5 sm:mt-1 truncate">{formatCurrency(bill.amount_paid)}</p>
           </div>
-          <div className={`rounded-xl p-4 text-center ${balance > 0 ? "bg-red-50" : "bg-emerald-50"}`}>
-            <p className={`text-xs font-medium ${balance > 0 ? "text-red-500" : "text-emerald-600"}`}>{t("balanceDue")}</p>
-            <p className={`text-lg font-bold mt-1 ${balance > 0 ? "text-red-600" : "text-emerald-700"}`}>
+          <div className={`rounded-xl p-2.5 sm:p-4 text-center ${balance > 0 ? "bg-red-50" : "bg-emerald-50"}`}>
+            <p className={`text-xs font-medium leading-tight ${balance > 0 ? "text-red-500" : "text-emerald-600"}`}>{t("balanceDue")}</p>
+            <p className={`text-sm sm:text-lg font-bold mt-0.5 sm:mt-1 truncate ${balance > 0 ? "text-red-600" : "text-emerald-700"}`}>
               {formatCurrency(balance)}
             </p>
           </div>
@@ -249,21 +249,21 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
 
         {/* Action buttons */}
         {!isCancelled && (
-          <div className="mt-4 flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+          <div className="mt-4 flex flex-col sm:flex-row flex-wrap gap-2 pt-4 border-t border-slate-100">
             {!isPaid && (
               <button onClick={() => setShowPayment(true)}
-                className="btn-primary flex items-center gap-2">
+                className="btn-primary flex items-center justify-center gap-2 sm:w-auto w-full">
                 <IndianRupee size={15} /> {t("recordPayment")}
               </button>
             )}
             <button onClick={handleDuplicate}
-              className="btn-secondary flex items-center gap-2">
+              className="btn-secondary flex items-center justify-center gap-2 sm:w-auto w-full">
               <Copy size={15} /> {t("duplicateBill")}
             </button>
             {!isPaid && (
               <button onClick={handleCancel}
                 disabled={cancelMutation.isPending}
-                className="btn-secondary flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50">
+                className="btn-secondary flex items-center justify-center gap-2 text-red-600 border-red-200 hover:bg-red-50 sm:w-auto w-full">
                 <XCircle size={15} /> {cancelMutation.isPending ? t("cancellingBill") : t("cancelBill")}
               </button>
             )}
@@ -284,13 +284,15 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
 
       {/* Credit available banner */}
       {bill.customer && Number(bill.customer.credit_balance) > 0 && !isPaid && !isCancelled && (
-        <div className="card p-4 no-print flex items-center gap-3 border-violet-200 bg-violet-50">
-          <Wallet size={16} className="text-violet-600 shrink-0" />
-          <p className="text-sm text-violet-800">
-            {lang === "hi"
-              ? `${bill.customer.name} के पास ${formatCurrency(bill.customer.credit_balance)} क्रेडिट उपलब्ध है`
-              : `${bill.customer.name} has ${formatCurrency(bill.customer.credit_balance)} credit available`}
-          </p>
+        <div className="card p-4 no-print flex flex-col sm:flex-row sm:items-center gap-3 border-violet-200 bg-violet-50">
+          <div className="flex items-center gap-3 min-w-0">
+            <Wallet size={16} className="text-violet-600 shrink-0" />
+            <p className="text-sm text-violet-800">
+              {lang === "hi"
+                ? `${bill.customer.name} के पास ${formatCurrency(bill.customer.credit_balance)} क्रेडिट उपलब्ध है`
+                : `${bill.customer.name} has ${formatCurrency(bill.customer.credit_balance)} credit available`}
+            </p>
+          </div>
           <button
             onClick={() => {
               if (!confirm(
@@ -301,7 +303,7 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
               applyCreditMutation.mutate();
             }}
             disabled={applyCreditMutation.isPending}
-            className="ml-auto btn-primary text-sm py-1.5 px-4 flex items-center gap-2"
+            className="btn-primary text-sm py-1.5 px-4 flex items-center justify-center gap-2 sm:ml-auto w-full sm:w-auto"
           >
             <Wallet size={13} />
             {applyCreditMutation.isPending
@@ -320,20 +322,20 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
           <div className="space-y-2">
             {bill.payment_logs.map((log) => (
               <div key={log.id}
-                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                <div className="flex items-center gap-3">
+                className="flex items-center justify-between p-3 bg-slate-50 rounded-xl gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
                     <CheckCircle size={14} className="text-emerald-600" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-semibold text-slate-900">{formatCurrency(log.amount)}</p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-400 truncate">
                       {methodLabel(log.method)}
                       {log.note ? ` · ${log.note}` : ""}
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   <p className="text-xs text-slate-400">{formatDateTime(log.created_at)}</p>
                 </div>
               </div>
@@ -348,8 +350,8 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
         </div>
       )}
 
-      {/* Invoice preview */}
-      <div className="no-print">
+      {/* Invoice preview — hidden on mobile to prevent horizontal overflow */}
+      <div className="no-print hidden sm:block">
         <p className="text-xs text-slate-400 text-center mb-3">{t("invoicePreview")}</p>
         <div className="bg-slate-200 rounded-xl p-4 overflow-x-auto">
           <div className="shadow-xl mx-auto w-fit">
@@ -363,6 +365,14 @@ export default function BillDetailPage({ params }: { params: { id: string } }) {
             />
           </div>
         </div>
+      </div>
+
+      {/* Mobile: print button instead of preview */}
+      <div className="no-print sm:hidden">
+        <button onClick={handlePrint}
+          className="btn-secondary w-full flex items-center justify-center gap-2">
+          <Printer size={15} /> {t("print")} / {t("savePDF")}
+        </button>
       </div>
 
       {/* Hidden actual print target */}

@@ -56,13 +56,16 @@ function SupplierModal({ supplier, onClose }: { supplier?: Supplier; onClose: ()
   });
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+    <div className="fixed inset-0 bg-black/40 z-50 flex flex-col justify-end sm:items-center sm:justify-center sm:p-4 backdrop-blur-sm">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh]">
+        <div className="sm:hidden flex justify-center pt-3 pb-1 flex-shrink-0">
+          <div className="w-10 h-1 bg-slate-300 rounded-full" />
+        </div>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 flex-shrink-0">
           <h2 className="font-bold text-slate-900">{isEdit ? "Edit Supplier" : "Add Supplier"}</h2>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition"><X size={20} /></button>
         </div>
-        <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+        <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="p-6 space-y-4 overflow-y-auto flex-1">
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Name *</label>
             <input {...register("name")} placeholder="Supplier name" className="input-field" />
@@ -101,9 +104,9 @@ function SupplierModal({ supplier, onClose }: { supplier?: Supplier; onClose: ()
               <label htmlFor="is_active_supplier" className="text-sm font-medium text-slate-700">Active</label>
             </div>
           )}
-          <div className="flex justify-end gap-3 pt-2">
-            <button type="button" onClick={onClose} className="btn-secondary">{t("cancel")}</button>
-            <button type="submit" disabled={mutation.isPending} className="btn-primary">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-2">
+            <button type="button" onClick={onClose} className="btn-secondary w-full sm:w-auto">{t("cancel")}</button>
+            <button type="submit" disabled={mutation.isPending} className="btn-primary w-full sm:w-auto">
               {mutation.isPending ? t("saving") : isEdit ? t("update") : "Add Supplier"}
             </button>
           </div>
@@ -129,12 +132,12 @@ export default function SuppliersPage() {
         <SupplierModal supplier={modal.supplier} onClose={() => setModal({ open: false })} />
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="page-title">Suppliers</h1>
           <p className="text-slate-500 text-sm mt-0.5">{suppliers.length} suppliers</p>
         </div>
-        <button onClick={() => setModal({ open: true })} className="btn-primary flex items-center gap-2">
+        <button onClick={() => setModal({ open: true })} className="btn-primary flex items-center gap-2 shrink-0">
           <Plus size={16} /> Add Supplier
         </button>
       </div>

@@ -14,14 +14,17 @@ function StatCard({ title, value, sub, icon: Icon, color }: {
   icon: React.ElementType; color: string;
 }) {
   return (
-    <div className="card p-5 flex items-start gap-4">
-      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
-        <Icon size={20} className="text-white" />
-      </div>
-      <div className="min-w-0">
-        <p className="text-xs text-slate-500 font-medium">{title}</p>
-        <p className="text-2xl font-bold text-slate-900 mt-0.5 leading-tight">{value}</p>
-        <p className="text-xs text-slate-400 mt-0.5">{sub}</p>
+    <div className="card p-3 sm:p-5">
+      <div className="flex items-start gap-2.5 sm:gap-4">
+        <div className={`w-8 h-8 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 ${color}`}>
+          <Icon size={16} className="text-white sm:hidden" />
+          <Icon size={20} className="text-white hidden sm:block" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs text-slate-500 font-medium leading-tight truncate">{title}</p>
+          <p className="text-base sm:text-2xl font-bold text-slate-900 mt-0.5 leading-tight truncate">{value}</p>
+          <p className="text-xs text-slate-400 mt-0.5 truncate">{sub}</p>
+        </div>
       </div>
     </div>
   );
@@ -53,14 +56,14 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0">
           <h1 className="page-title">{t("dashboard")}</h1>
-          <p className="text-slate-500 text-sm mt-0.5" suppressHydrationWarning>
+          <p className="text-slate-500 text-sm mt-0.5 truncate max-w-[220px] sm:max-w-none" suppressHydrationWarning>
             {t("welcomeBack")}{orgName ? ` to ${orgName}` : ""}
           </p>
         </div>
-        <Link href="/bills/new" className="btn-primary flex items-center gap-2">
+        <Link href="/bills/new" className="btn-primary flex items-center gap-2 shrink-0">
           <ReceiptText size={16} /> {t("newBill")}
         </Link>
       </div>
@@ -101,14 +104,14 @@ export default function DashboardPage() {
           <div>
             {bills.slice(0, 8).map((bill) => (
               <Link key={bill.id} href={`/bills/${bill.id}`}
-                className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 group">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800">{bill.bill_number}</p>
+                className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-3.5 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 group">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-slate-800 truncate">{bill.bill_number}</p>
                   <p className="text-xs text-slate-400 mt-0.5 truncate">
                     {bill.customer_name || t("walkin")} · {formatDateTime(bill.created_at)}
                   </p>
                 </div>
-                <div className="flex items-center gap-3 ml-4 shrink-0">
+                <div className="flex flex-col items-end gap-0.5 ml-3 shrink-0">
                   <p className="text-sm font-bold text-slate-900">{formatCurrency(bill.grand_total)}</p>
                   <span className={statusClass[bill.payment_status] || "badge-pending"}>
                     {bill.payment_status}

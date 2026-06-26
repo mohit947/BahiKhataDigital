@@ -215,6 +215,7 @@ export default function BillForm({ fromBillId }: Props) {
           <ProductSearch onSelect={addFromProduct} />
         </div>
 
+        <p className="text-xs text-slate-400 mb-2 sm:hidden">← Scroll right to see all columns</p>
         <div className="overflow-x-auto rounded-lg border border-slate-100">
           <table className="w-full text-sm min-w-[700px]">
             <thead className="bg-slate-50">
@@ -327,9 +328,9 @@ export default function BillForm({ fromBillId }: Props) {
       </div>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3 pb-4">
-        <button type="button" onClick={() => router.back()} className="btn-secondary">{t("cancel")}</button>
-        <button type="submit" disabled={mutation.isPending} className="btn-primary min-w-32">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pb-4">
+        <button type="button" onClick={() => router.back()} className="btn-secondary w-full sm:w-auto">{t("cancel")}</button>
+        <button type="submit" disabled={mutation.isPending} className="btn-primary w-full sm:w-auto sm:min-w-32">
           {mutation.isPending ? t("creating") : t("createBill")}
         </button>
       </div>

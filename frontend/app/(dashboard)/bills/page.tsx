@@ -59,15 +59,15 @@ export default function BillsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="page-title">{t("bills")}</h1>
           <p className="text-slate-500 text-sm mt-0.5">{bills.length} {t("bills").toLowerCase()}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           {bills.length > 0 && (
             <button onClick={exportCSV} className="btn-secondary flex items-center gap-2">
-              <Download size={15} /> {t("exportCSV")}
+              <Download size={15} /> <span className="hidden sm:inline">{t("exportCSV")}</span>
             </button>
           )}
           <Link href="/bills/new" className="btn-primary flex items-center gap-2">
